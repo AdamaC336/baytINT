@@ -77,7 +77,7 @@ export function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
         <div className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 py-2">
           Overview
         </div>
-        <NavItem to="/" icon={<LayoutDashboard size={18} />} label="Dashboard" active={location === "/"} />
+        <NavItem to="/dashboard" icon={<LayoutDashboard size={18} />} label="Dashboard" active={location === "/" || location === "/dashboard"} />
         <NavItem to="/pl-tracker" icon={<Database size={18} />} label="P&L Tracker" active={location === "/pl-tracker"} />
         <NavItem to="/ai-agents" icon={<Bot size={18} />} label="AI Agents" active={location === "/ai-agents"} />
         <NavItem to="/ad-optimizer" icon={<LineChart size={18} />} label="Ad Optimizer" active={location === "/ad-optimizer"} />
