@@ -291,6 +291,130 @@ export default function Dashboard() {
       return renderProjectTracker();
     } else if (location === '/meeting-panel') {
       return renderMeetings();
+    } else if (location === '/customer-memory') {
+      return (
+        <div className="w-full">
+          <div className="text-lg font-semibold mb-4 text-secondary-600">Customer Memory System</div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500 mb-4">Customer data for {activeBrand}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {aiAgents.length > 0 ? (
+                <>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Customer Insights</h3>
+                    <p className="text-slate-500 text-sm">AI-powered customer analytics and segmentation based on purchase behavior and engagement metrics.</p>
+                  </div>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Personalization Engine</h3>
+                    <p className="text-slate-500 text-sm">Custom experiences generated from 1,243 customer profiles tracked across multiple touchpoints.</p>
+                  </div>
+                </>
+              ) : (
+                <div className="col-span-2">
+                  <p className="text-center text-slate-500">No customer data available for {activeBrand}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    } else if (location === '/support-monitoring') {
+      return (
+        <div className="w-full">
+          <div className="text-lg font-semibold mb-4 text-secondary-600">Support & Sentiment Monitoring</div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500 mb-4">Support metrics for {activeBrand}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {tasks.length > 0 ? (
+                <>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Sentiment Score</h3>
+                    <div className="text-xl font-semibold">92%</div>
+                    <p className="text-green-500 text-sm">+4.2% from last month</p>
+                  </div>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Response Time</h3>
+                    <div className="text-xl font-semibold">1.4h</div>
+                    <p className="text-green-500 text-sm">-0.3h from last month</p>
+                  </div>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Resolution Rate</h3>
+                    <div className="text-xl font-semibold">94.8%</div>
+                    <p className="text-green-500 text-sm">+2.1% from last month</p>
+                  </div>
+                </>
+              ) : (
+                <div className="col-span-3">
+                  <p className="text-center text-slate-500">No support data available for {activeBrand}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    } else if (location === '/content-seo') {
+      return (
+        <div className="w-full">
+          <div className="text-lg font-semibold mb-4 text-secondary-600">Content & SEO Automation</div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500 mb-4">Content metrics for {activeBrand}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {aiAgents.length > 0 ? (
+                <>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Content Performance</h3>
+                    <p className="text-slate-500 text-sm">AI-generated content has driven 42% more traffic than manual content over the last 30 days.</p>
+                  </div>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">SEO Rankings</h3>
+                    <p className="text-slate-500 text-sm">15 keywords now ranking in top 10 positions, up from 8 last month.</p>
+                  </div>
+                </>
+              ) : (
+                <div className="col-span-2">
+                  <p className="text-center text-slate-500">No content data available for {activeBrand}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    } else if (location === '/kpi-scorecard') {
+      return (
+        <div className="w-full">
+          <div className="text-lg font-semibold mb-4 text-secondary-600">KPI Scorecard</div>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500 mb-4">Performance metrics for {activeBrand}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {financials.length > 0 ? (
+                <>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Overall Performance</h3>
+                    <div className="flex items-center">
+                      <div className="h-2 flex-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-green-500 rounded-full" style={{ width: '78%' }}></div>
+                      </div>
+                      <span className="ml-2 font-semibold">78%</span>
+                    </div>
+                    <p className="text-slate-500 text-sm mt-2">8 of 10 KPIs on track for quarterly targets</p>
+                  </div>
+                  <div className="p-4 border rounded-md border-slate-200 dark:border-slate-700">
+                    <h3 className="font-medium mb-2">Areas for Improvement</h3>
+                    <ul className="text-slate-500 text-sm list-disc ml-4">
+                      <li>Customer acquisition cost (CAC) is 12% above target</li>
+                      <li>Email open rates below 22% benchmark</li>
+                    </ul>
+                  </div>
+                </>
+              ) : (
+                <div className="col-span-2">
+                  <p className="text-center text-slate-500">No KPI data available for {activeBrand}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
     } 
     
     // Default - fallback to showing dashboard view
