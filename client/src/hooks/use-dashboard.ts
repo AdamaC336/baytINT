@@ -76,6 +76,17 @@ export const useDashboardData = (brandCode: string) => {
     tasksQuery.error || 
     meetingsQuery.error;
 
+  // Refetch function for all data
+  const refetch = () => {
+    brandIdQuery.refetch();
+    financialsQuery.refetch();
+    adCampaignsQuery.refetch();
+    aiAgentsQuery.refetch();
+    productMarketFitQuery.refetch();
+    tasksQuery.refetch();
+    meetingsQuery.refetch();
+  };
+
   return {
     brandId,
     financials: financialsQuery.data || [],
@@ -86,5 +97,6 @@ export const useDashboardData = (brandCode: string) => {
     meetings: meetingsQuery.data || [],
     isLoading,
     error,
+    refetch,
   };
 };

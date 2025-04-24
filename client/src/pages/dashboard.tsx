@@ -99,7 +99,113 @@ export default function Dashboard() {
   
   // Function to render page content based on current route
   const renderContent = () => {
-    if (location === '/pl-tracker') {
+    // First check for dashboard routes - both '/' and '/dashboard' should show full overview
+    if (location === '/' || location === '/dashboard') {
+      // Full dashboard overview with all components
+      return (
+        <>
+          {/* KPI Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {isLoading ? (
+              <>
+                <KPISkeleton />
+                <KPISkeleton />
+                <KPISkeleton />
+                <KPISkeleton />
+              </>
+            ) : (
+              <>
+                <KPICard 
+                  title="Total Revenue" 
+                  value={`$${financials.length > 0 ? financials[0].revenue.toLocaleString() : '124,568'}`} 
+                  change={12.5} 
+                  previousValue={`$${110742}`}
+                  type="revenue"
+                />
+                <KPICard 
+                  title="Net Profit" 
+                  value={`$${financials.length > 0 ? financials[0].profit.toLocaleString() : '53,432'}`} 
+                  change={8.2} 
+                  previousValue={`$${49382}`}
+                  type="profit"
+                />
+                <KPICard 
+                  title="Average ROAS" 
+                  value={`${financials.length > 0 ? financials[0].roas.toFixed(1) : '3.2'}x`} 
+                  change={-2.1} 
+                  previousValue={`3.3x`}
+                  type="roas"
+                />
+                <KPICard 
+                  title="New Customers" 
+                  value={`1,243`} 
+                  change={15.3} 
+                  previousValue={`1,078`}
+                  type="customers"
+                />
+              </>
+            )}
+          </div>
+          
+          {/* Main Dashboard Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            {/* Left Column */}
+            <div className="lg:col-span-2 space-y-6">
+              
+              {/* P&L Chart */}
+              {isLoading ? (
+                <CardSkeleton height="md" />
+              ) : (
+                <PLChartCard data={plChartData} totals={plTotals} />
+              )}
+              
+              {/* Ad Performance */}
+              {isLoading ? (
+                <CardSkeleton height="lg" />
+              ) : (
+                <AdPerformance campaigns={adCampaigns} refetch={refetch} />
+              )}
+              
+              {/* Product Market Fit */}
+              {isLoading || !productMarketFit ? (
+                <CardSkeleton height="lg" />
+              ) : (
+                <ProductMarketFitCard data={productMarketFit} />
+              )}
+            </div>
+            
+            {/* Right Column */}
+            <div className="space-y-6">
+              
+              {/* AI Agent Performance Card */}
+              {isLoading ? (
+                <CardSkeleton height="md" />
+              ) : (
+                <AIAgentCard agents={aiAgents} />
+              )}
+              
+              {/* Task Management Card */}
+              {isLoading ? (
+                <CardSkeleton height="md" />
+              ) : (
+                <TaskManagement tasks={tasks} refetch={refetch} />
+              )}
+              
+              {/* Upcoming Meetings */}
+              {isLoading ? (
+                <CardSkeleton height="md" />
+              ) : (
+                <MeetingsCard meetings={meetings} />
+              )}
+            </div>
+          </div>
+        </>
+      );
+    } 
+    
+    // Handle individual section pages
+    else if (location === '/pl-tracker') {
       return (
         <div className="w-full">
           {isLoading ? (
@@ -159,8 +265,10 @@ export default function Dashboard() {
           )}
         </div>
       );
-    } else {
-      // Default dashboard view with all components
+    } 
+    
+    // Default - fallback to showing dashboard view
+    else {
       return (
         <>
           {/* KPI Summary Cards */}
