@@ -113,7 +113,7 @@ interface NavItemProps {
 function NavItem({ to, icon, label, active }: NavItemProps) {
   return (
     <Link href={to}>
-      <a
+      <div
         className={cn(
           "flex items-center space-x-2 py-2 px-2 rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors",
           active && "text-secondary-600 font-medium bg-secondary-50 dark:bg-secondary-900/20 dark:text-secondary-400"
@@ -121,7 +121,7 @@ function NavItem({ to, icon, label, active }: NavItemProps) {
       >
         <span className="text-lg">{icon}</span>
         <span>{label}</span>
-      </a>
+      </div>
     </Link>
   );
 }
