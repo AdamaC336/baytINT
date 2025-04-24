@@ -1,4 +1,5 @@
 import { pgTable, text, serial, integer, boolean, timestamp, json, real, pgEnum } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -30,10 +31,19 @@ export const brands = pgTable("brands", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const brandsRelations = relations(brands, ({ many }) => ({
+  financials: many(financials),
+  adCampaigns: many(adCampaigns),
+  aiAgents: many(aiAgents),
+  productMarketFit: many(productMarketFit),
+  tasks: many(tasks),
+  meetings: many(meetings),
+}));
+
 // Financial data table
 export const financials = pgTable("financials", {
   id: serial("id").primaryKey(),
-  brandId: integer("brand_id").notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
   date: timestamp("date").defaultNow(),
   revenue: real("revenue").notNull().default(0),
   adSpend: real("ad_spend").notNull().default(0),
@@ -43,10 +53,17 @@ export const financials = pgTable("financials", {
   roas: real("roas").notNull().default(0),
 });
 
+export const financialsRelations = relations(financials, ({ one }) => ({
+  brand: one(brands, {
+    fields: [financials.brandId],
+    references: [brands.id],
+  }),
+}));
+
 // Ad Campaigns table
 export const adCampaigns = pgTable("ad_campaigns", {
   id: serial("id").primaryKey(),
-  brandId: integer("brand_id").notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
   name: text("name").notNull(),
   platform: adPlatformEnum("platform").notNull(),
   spend: real("spend").notNull().default(0),
@@ -57,10 +74,17 @@ export const adCampaigns = pgTable("ad_campaigns", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const adCampaignsRelations = relations(adCampaigns, ({ one }) => ({
+  brand: one(brands, {
+    fields: [adCampaigns.brandId],
+    references: [brands.id],
+  }),
+}));
+
 // AI Agents table
 export const aiAgents = pgTable("ai_agents", {
   id: serial("id").primaryKey(),
-  brandId: integer("brand_id").notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
   name: text("name").notNull(),
   type: agentTypeEnum("type").notNull(),
   successRate: real("success_rate").notNull().default(0),
@@ -71,10 +95,17 @@ export const aiAgents = pgTable("ai_agents", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const aiAgentsRelations = relations(aiAgents, ({ one }) => ({
+  brand: one(brands, {
+    fields: [aiAgents.brandId],
+    references: [brands.id],
+  }),
+}));
+
 // Product Market Fit table
 export const productMarketFit = pgTable("product_market_fit", {
   id: serial("id").primaryKey(),
-  brandId: integer("brand_id").notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
   date: timestamp("date").defaultNow(),
   pmfScore: real("pmf_score").notNull().default(0),
   returnRate: real("return_rate").notNull().default(0),
@@ -84,10 +115,17 @@ export const productMarketFit = pgTable("product_market_fit", {
   objections: json("objections"),
 });
 
+export const productMarketFitRelations = relations(productMarketFit, ({ one }) => ({
+  brand: one(brands, {
+    fields: [productMarketFit.brandId],
+    references: [brands.id],
+  }),
+}));
+
 // Tasks table
 export const tasks = pgTable("tasks", {
   id: serial("id").primaryKey(),
-  brandId: integer("brand_id").notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
   title: text("title").notNull(),
   description: text("description"),
   assignedTo: text("assigned_to"),
@@ -100,10 +138,17 @@ export const tasks = pgTable("tasks", {
   completed: boolean("completed").default(false),
 });
 
+export const tasksRelations = relations(tasks, ({ one }) => ({
+  brand: one(brands, {
+    fields: [tasks.brandId],
+    references: [brands.id],
+  }),
+}));
+
 // Meetings table
 export const meetings = pgTable("meetings", {
   id: serial("id").primaryKey(),
-  brandId: integer("brand_id").notNull(),
+  brandId: integer("brand_id").notNull().references(() => brands.id),
   title: text("title").notNull(),
   description: text("description"),
   startTime: timestamp("start_time").notNull(),
@@ -113,6 +158,13 @@ export const meetings = pgTable("meetings", {
   meetingLink: text("meeting_link"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const meetingsRelations = relations(meetings, ({ one }) => ({
+  brand: one(brands, {
+    fields: [meetings.brandId],
+    references: [brands.id],
+  }),
+}));
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({

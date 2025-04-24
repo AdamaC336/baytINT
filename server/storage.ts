@@ -8,6 +8,8 @@ import {
   tasks, Task, InsertTask,
   meetings, Meeting, InsertMeeting
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 // Comprehensive storage interface for the BI Dashboard
 export interface IStorage {
@@ -526,4 +528,169 @@ export class MemStorage implements IStorage {
 }
 
 // Export a singleton instance
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User management
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  // Brand management
+  async getBrands(): Promise<Brand[]> {
+    return await db.select().from(brands);
+  }
+
+  async getBrand(id: number): Promise<Brand | undefined> {
+    const [brand] = await db.select().from(brands).where(eq(brands.id, id));
+    return brand || undefined;
+  }
+
+  async getBrandByCode(code: string): Promise<Brand | undefined> {
+    const [brand] = await db.select().from(brands).where(eq(brands.code, code as any));
+    return brand || undefined;
+  }
+
+  async createBrand(brandData: InsertBrand): Promise<Brand> {
+    const [brand] = await db.insert(brands).values(brandData).returning();
+    return brand;
+  }
+
+  // Financial data
+  async getFinancials(brandId: number, period?: string): Promise<Financial[]> {
+    let query = db.select().from(financials).where(eq(financials.brandId, brandId));
+    return await query;
+  }
+
+  async createFinancial(financialData: InsertFinancial): Promise<Financial> {
+    const [financial] = await db.insert(financials).values(financialData).returning();
+    return financial;
+  }
+
+  // Ad campaigns
+  async getAdCampaigns(brandId: number): Promise<AdCampaign[]> {
+    return await db.select().from(adCampaigns).where(eq(adCampaigns.brandId, brandId));
+  }
+
+  async getAdCampaign(id: number): Promise<AdCampaign | undefined> {
+    const [campaign] = await db.select().from(adCampaigns).where(eq(adCampaigns.id, id));
+    return campaign || undefined;
+  }
+
+  async createAdCampaign(campaignData: InsertAdCampaign): Promise<AdCampaign> {
+    const [campaign] = await db.insert(adCampaigns).values(campaignData).returning();
+    return campaign;
+  }
+
+  async updateAdCampaign(id: number, data: Partial<InsertAdCampaign>): Promise<AdCampaign | undefined> {
+    const [updated] = await db.update(adCampaigns)
+      .set(data)
+      .where(eq(adCampaigns.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  // AI agents
+  async getAiAgents(brandId: number): Promise<AiAgent[]> {
+    return await db.select().from(aiAgents).where(eq(aiAgents.brandId, brandId));
+  }
+
+  async getAiAgent(id: number): Promise<AiAgent | undefined> {
+    const [agent] = await db.select().from(aiAgents).where(eq(aiAgents.id, id));
+    return agent || undefined;
+  }
+
+  async createAiAgent(agentData: InsertAiAgent): Promise<AiAgent> {
+    const [agent] = await db.insert(aiAgents).values(agentData).returning();
+    return agent;
+  }
+
+  async updateAiAgent(id: number, data: Partial<InsertAiAgent>): Promise<AiAgent | undefined> {
+    const [updated] = await db.update(aiAgents)
+      .set(data)
+      .where(eq(aiAgents.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  // Product market fit
+  async getProductMarketFit(brandId: number): Promise<ProductMarketFit | undefined> {
+    const [pmf] = await db.select().from(productMarketFit).where(eq(productMarketFit.brandId, brandId));
+    return pmf || undefined;
+  }
+
+  async createProductMarketFit(pmfData: InsertProductMarketFit): Promise<ProductMarketFit> {
+    const [pmf] = await db.insert(productMarketFit).values(pmfData).returning();
+    return pmf;
+  }
+
+  async updateProductMarketFit(id: number, data: Partial<InsertProductMarketFit>): Promise<ProductMarketFit | undefined> {
+    const [updated] = await db.update(productMarketFit)
+      .set(data)
+      .where(eq(productMarketFit.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  // Tasks
+  async getTasks(brandId: number, status?: string): Promise<Task[]> {
+    let query = db.select().from(tasks).where(eq(tasks.brandId, brandId));
+    if (status) {
+      query = query.where(eq(tasks.status, status as any));
+    }
+    return await query;
+  }
+
+  async getTask(id: number): Promise<Task | undefined> {
+    const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
+    return task || undefined;
+  }
+
+  async createTask(taskData: InsertTask): Promise<Task> {
+    const [task] = await db.insert(tasks).values(taskData).returning();
+    return task;
+  }
+
+  async updateTask(id: number, data: Partial<InsertTask>): Promise<Task | undefined> {
+    const [updated] = await db.update(tasks)
+      .set(data)
+      .where(eq(tasks.id, id))
+      .returning();
+    return updated || undefined;
+  }
+
+  // Meetings
+  async getMeetings(brandId: number): Promise<Meeting[]> {
+    return await db.select().from(meetings).where(eq(meetings.brandId, brandId));
+  }
+
+  async getMeeting(id: number): Promise<Meeting | undefined> {
+    const [meeting] = await db.select().from(meetings).where(eq(meetings.id, id));
+    return meeting || undefined;
+  }
+
+  async createMeeting(meetingData: InsertMeeting): Promise<Meeting> {
+    const [meeting] = await db.insert(meetings).values(meetingData).returning();
+    return meeting;
+  }
+
+  async updateMeeting(id: number, data: Partial<InsertMeeting>): Promise<Meeting | undefined> {
+    const [updated] = await db.update(meetings)
+      .set(data)
+      .where(eq(meetings.id, id))
+      .returning();
+    return updated || undefined;
+  }
+}
+
+// Use the database storage
+export const storage = new DatabaseStorage();
