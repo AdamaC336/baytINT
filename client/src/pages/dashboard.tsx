@@ -99,6 +99,104 @@ export default function Dashboard() {
   
   // Function to render page content based on current route
   const renderContent = () => {
+    console.log("Current location:", location); // For debugging
+
+    // Render P&L Tracker content
+    const renderPLTracker = () => (
+      <div className="w-full">
+        <div className="text-lg font-semibold mb-4 text-secondary-600">P&L Financial Data</div>
+        {isLoading ? (
+          <CardSkeleton height="lg" />
+        ) : financials.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500">No financial data available for {activeBrand}</p>
+          </div>
+        ) : (
+          <PLChartCard data={plChartData} totals={plTotals} />
+        )}
+      </div>
+    );
+
+    // Render AI Agents content
+    const renderAIAgents = () => (
+      <div className="w-full">
+        <div className="text-lg font-semibold mb-4 text-secondary-600">AI Agent Performance</div>
+        {isLoading ? (
+          <CardSkeleton height="lg" />
+        ) : aiAgents.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500">No AI agents configured for {activeBrand}</p>
+          </div>
+        ) : (
+          <AIAgentCard agents={aiAgents} />
+        )}
+      </div>
+    );
+
+    // Render Ad Performance content
+    const renderAdOptimizer = () => (
+      <div className="w-full">
+        <div className="text-lg font-semibold mb-4 text-secondary-600">Ad Campaign Performance</div>
+        {isLoading ? (
+          <CardSkeleton height="lg" />
+        ) : adCampaigns.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500">No ad campaigns available for {activeBrand}</p>
+          </div>
+        ) : (
+          <AdPerformance campaigns={adCampaigns} refetch={refetch} />
+        )}
+      </div>
+    );
+
+    // Render Product Market Fit content
+    const renderPMF = () => (
+      <div className="w-full">
+        <div className="text-lg font-semibold mb-4 text-secondary-600">Product-Market Fit Metrics</div>
+        {isLoading ? (
+          <CardSkeleton height="lg" />
+        ) : !productMarketFit ? (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500">No product-market fit data available for {activeBrand}</p>
+          </div>
+        ) : (
+          <ProductMarketFitCard data={productMarketFit} />
+        )}
+      </div>
+    );
+
+    // Render Project Tracker content
+    const renderProjectTracker = () => (
+      <div className="w-full">
+        <div className="text-lg font-semibold mb-4 text-secondary-600">Tasks & Projects</div>
+        {isLoading ? (
+          <CardSkeleton height="lg" />
+        ) : tasks.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500">No tasks available for {activeBrand}</p>
+          </div>
+        ) : (
+          <TaskManagement tasks={tasks} refetch={refetch} />
+        )}
+      </div>
+    );
+
+    // Render Meeting Panel content 
+    const renderMeetings = () => (
+      <div className="w-full">
+        <div className="text-lg font-semibold mb-4 text-secondary-600">Upcoming Meetings</div>
+        {isLoading ? (
+          <CardSkeleton height="lg" />
+        ) : meetings.length === 0 ? (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500">No meetings scheduled for {activeBrand}</p>
+          </div>
+        ) : (
+          <MeetingsCard meetings={meetings} />
+        )}
+      </div>
+    );
+
     // First check for dashboard routes - both '/' and '/dashboard' should show full overview
     if (location === '/' || location === '/dashboard') {
       // Full dashboard overview with all components
@@ -117,30 +215,30 @@ export default function Dashboard() {
               <>
                 <KPICard 
                   title="Total Revenue" 
-                  value={`$${financials.length > 0 ? financials[0].revenue.toLocaleString() : '124,568'}`} 
+                  value={`$${financials.length > 0 ? financials[0].revenue.toLocaleString() : '0'}`} 
                   change={12.5} 
-                  previousValue={`$${110742}`}
+                  previousValue={`$${financials.length > 0 ? Math.round(financials[0].revenue * 0.9).toLocaleString() : '0'}`}
                   type="revenue"
                 />
                 <KPICard 
                   title="Net Profit" 
-                  value={`$${financials.length > 0 ? financials[0].profit.toLocaleString() : '53,432'}`} 
+                  value={`$${financials.length > 0 ? financials[0].profit.toLocaleString() : '0'}`} 
                   change={8.2} 
-                  previousValue={`$${49382}`}
+                  previousValue={`$${financials.length > 0 ? Math.round(financials[0].profit * 0.92).toLocaleString() : '0'}`}
                   type="profit"
                 />
                 <KPICard 
                   title="Average ROAS" 
-                  value={`${financials.length > 0 ? financials[0].roas.toFixed(1) : '3.2'}x`} 
+                  value={`${financials.length > 0 ? financials[0].roas.toFixed(1) : '0.0'}x`} 
                   change={-2.1} 
-                  previousValue={`3.3x`}
+                  previousValue={`${financials.length > 0 ? (financials[0].roas * 1.02).toFixed(1) : '0.0'}x`}
                   type="roas"
                 />
                 <KPICard 
                   title="New Customers" 
-                  value={`1,243`} 
+                  value={`${adCampaigns.length > 0 ? '1,243' : '0'}`} 
                   change={15.3} 
-                  previousValue={`1,078`}
+                  previousValue={`${adCampaigns.length > 0 ? '1,078' : '0'}`}
                   type="customers"
                 />
               </>
@@ -154,50 +252,26 @@ export default function Dashboard() {
             <div className="lg:col-span-2 space-y-6">
               
               {/* P&L Chart */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <PLChartCard data={plChartData} totals={plTotals} />
-              )}
+              {renderPLTracker()}
               
               {/* Ad Performance */}
-              {isLoading ? (
-                <CardSkeleton height="lg" />
-              ) : (
-                <AdPerformance campaigns={adCampaigns} refetch={refetch} />
-              )}
+              {renderAdOptimizer()}
               
               {/* Product Market Fit */}
-              {isLoading || !productMarketFit ? (
-                <CardSkeleton height="lg" />
-              ) : (
-                <ProductMarketFitCard data={productMarketFit} />
-              )}
+              {renderPMF()}
             </div>
             
             {/* Right Column */}
             <div className="space-y-6">
               
               {/* AI Agent Performance Card */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <AIAgentCard agents={aiAgents} />
-              )}
+              {renderAIAgents()}
               
               {/* Task Management Card */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <TaskManagement tasks={tasks} refetch={refetch} />
-              )}
+              {renderProjectTracker()}
               
               {/* Upcoming Meetings */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <MeetingsCard meetings={meetings} />
-              )}
+              {renderMeetings()}
             </div>
           </div>
         </>
@@ -206,65 +280,17 @@ export default function Dashboard() {
     
     // Handle individual section pages
     else if (location === '/pl-tracker') {
-      return (
-        <div className="w-full">
-          {isLoading ? (
-            <CardSkeleton height="lg" />
-          ) : (
-            <PLChartCard data={plChartData} totals={plTotals} />
-          )}
-        </div>
-      );
+      return renderPLTracker();
     } else if (location === '/ai-agents') {
-      return (
-        <div className="w-full">
-          {isLoading ? (
-            <CardSkeleton height="lg" />
-          ) : (
-            <AIAgentCard agents={aiAgents} />
-          )}
-        </div>
-      );
+      return renderAIAgents();
     } else if (location === '/ad-optimizer') {
-      return (
-        <div className="w-full">
-          {isLoading ? (
-            <CardSkeleton height="lg" />
-          ) : (
-            <AdPerformance campaigns={adCampaigns} refetch={refetch} />
-          )}
-        </div>
-      );
+      return renderAdOptimizer();
     } else if (location === '/pmf-tracker') {
-      return (
-        <div className="w-full">
-          {isLoading || !productMarketFit ? (
-            <CardSkeleton height="lg" />
-          ) : (
-            <ProductMarketFitCard data={productMarketFit} />
-          )}
-        </div>
-      );
+      return renderPMF();
     } else if (location === '/project-tracker') {
-      return (
-        <div className="w-full">
-          {isLoading ? (
-            <CardSkeleton height="lg" />
-          ) : (
-            <TaskManagement tasks={tasks} refetch={refetch} />
-          )}
-        </div>
-      );
+      return renderProjectTracker();
     } else if (location === '/meeting-panel') {
-      return (
-        <div className="w-full">
-          {isLoading ? (
-            <CardSkeleton height="lg" />
-          ) : (
-            <MeetingsCard meetings={meetings} />
-          )}
-        </div>
-      );
+      return renderMeetings();
     } 
     
     // Default - fallback to showing dashboard view
@@ -284,30 +310,30 @@ export default function Dashboard() {
               <>
                 <KPICard 
                   title="Total Revenue" 
-                  value={`$${financials.length > 0 ? financials[0].revenue.toLocaleString() : '124,568'}`} 
+                  value={`$${financials.length > 0 ? financials[0].revenue.toLocaleString() : '0'}`} 
                   change={12.5} 
-                  previousValue={`$${110742}`}
+                  previousValue={`$${financials.length > 0 ? Math.round(financials[0].revenue * 0.9).toLocaleString() : '0'}`}
                   type="revenue"
                 />
                 <KPICard 
                   title="Net Profit" 
-                  value={`$${financials.length > 0 ? financials[0].profit.toLocaleString() : '53,432'}`} 
+                  value={`$${financials.length > 0 ? financials[0].profit.toLocaleString() : '0'}`} 
                   change={8.2} 
-                  previousValue={`$${49382}`}
+                  previousValue={`$${financials.length > 0 ? Math.round(financials[0].profit * 0.92).toLocaleString() : '0'}`}
                   type="profit"
                 />
                 <KPICard 
                   title="Average ROAS" 
-                  value={`${financials.length > 0 ? financials[0].roas.toFixed(1) : '3.2'}x`} 
+                  value={`${financials.length > 0 ? financials[0].roas.toFixed(1) : '0.0'}x`} 
                   change={-2.1} 
-                  previousValue={`3.3x`}
+                  previousValue={`${financials.length > 0 ? (financials[0].roas * 1.02).toFixed(1) : '0.0'}x`}
                   type="roas"
                 />
                 <KPICard 
                   title="New Customers" 
-                  value={`1,243`} 
+                  value={`${adCampaigns.length > 0 ? '1,243' : '0'}`} 
                   change={15.3} 
-                  previousValue={`1,078`}
+                  previousValue={`${adCampaigns.length > 0 ? '1,078' : '0'}`}
                   type="customers"
                 />
               </>
@@ -321,50 +347,26 @@ export default function Dashboard() {
             <div className="lg:col-span-2 space-y-6">
               
               {/* P&L Chart */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <PLChartCard data={plChartData} totals={plTotals} />
-              )}
+              {renderPLTracker()}
               
               {/* Ad Performance */}
-              {isLoading ? (
-                <CardSkeleton height="lg" />
-              ) : (
-                <AdPerformance campaigns={adCampaigns} refetch={refetch} />
-              )}
+              {renderAdOptimizer()}
               
               {/* Product Market Fit */}
-              {isLoading || !productMarketFit ? (
-                <CardSkeleton height="lg" />
-              ) : (
-                <ProductMarketFitCard data={productMarketFit} />
-              )}
+              {renderPMF()}
             </div>
             
             {/* Right Column */}
             <div className="space-y-6">
               
               {/* AI Agent Performance Card */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <AIAgentCard agents={aiAgents} />
-              )}
+              {renderAIAgents()}
               
               {/* Task Management Card */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <TaskManagement tasks={tasks} refetch={refetch} />
-              )}
+              {renderProjectTracker()}
               
               {/* Upcoming Meetings */}
-              {isLoading ? (
-                <CardSkeleton height="md" />
-              ) : (
-                <MeetingsCard meetings={meetings} />
-              )}
+              {renderMeetings()}
             </div>
           </div>
         </>
